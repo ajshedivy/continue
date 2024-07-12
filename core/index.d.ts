@@ -585,7 +585,8 @@ type ModelProvider =
   | "deepseek"
   | "azure"
   | "openai-aiohttp"
-  | "msty";
+  | "msty"
+  | "watsonx";
 
 export type ModelName =
   | "AUTODETECT"

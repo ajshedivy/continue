@@ -33,6 +33,7 @@ import Replicate from "./Replicate.js";
 import TextGenWebUI from "./TextGenWebUI.js";
 import Together from "./Together.js";
 import ContinueProxy from "./stubs/ContinueProxy.js";
+import Watsonx from "./Watsonx.js";
 
 function convertToLetter(num: number): string {
   let result = "";
@@ -124,6 +125,7 @@ const LLMs = [
   Cloudflare,
   Deepseek,
   Msty,
+  Watsonx
 ];
 
 export async function llmFromDescription(
