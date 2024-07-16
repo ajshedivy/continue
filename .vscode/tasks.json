@@ -14,7 +14,7 @@
         // Start the React app that is used in the extension
         "gui:dev",
         // Start the docs site, without opening the browser
-        "docs:start"
+        // "docs:start"
       ],
       "group": {
         "kind": "build",

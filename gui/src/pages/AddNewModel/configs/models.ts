@@ -1,4 +1,4 @@
-import { ILLM, ModelProvider } from "core";
+import { ChatMessage, ILLM, ModelProvider } from "core";
 import { ModelProviderTags } from "../../../components/modelSelection/ModelProviderTag";
 import { InputDescriptor } from "./providers";
 
@@ -540,6 +540,43 @@ export const models: { [key: string]: ModelPackage } = {
     providerOptions: ["anthropic", "free-trial"],
     icon: "anthropic.png",
     isOpenSource: false,
+  },
+  granite13bChatV2: {
+    title: "Granite-13b-Chat-v2",
+    description: "IBM's latest chat model, fine-tuned for conversation",
+    params: {
+      model: "ibm/granite-13b-chat-v2",
+      contextLength: 200_000,
+      title: "Granite-13b-Chat-v2",
+      apiKey: "",
+    },
+    providerOptions: ["watsonx"],
+    icon: "watsonx.png",
+    isOpenSource: false
+  },
+  granite13bInstructV2 : {
+    title: "Granite-13b-Instruct-v2",
+    description: "IBM's latest instruct model, fine-tuned for instruction",
+    params: {
+      model: "ibm/granite-13b-instruct-v2",
+      title: "Granite-13b-Instruct-v2",
+      contextLength: 200_000,
+      apiKey: "",
+    },
+    providerOptions: ["watsonx"],
+    isOpenSource: false
+  },
+  granite20bCodeInstruct: {
+    title: "Granite-20b-Code-Instruct",
+    description: "IBM's latest code instruct model, fine-tuned for code instruction",
+    params: {
+      model: "ibm/granite-20b-code-instruct",
+      contextLength: 200_000,
+      title: "Granite-20b-Code-Instruct",
+      apiKey: "",
+    },
+    providerOptions: ["watsonx"],
+    isOpenSource: false
   },
   AUTODETECT: {
     title: "Autodetect",

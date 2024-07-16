@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import { CompletionOptions, LLMOptions, ModelProvider } from "../../index.js";
 import { BaseLLM } from "../index.js";
-import { streamSse } from "../stream.js";
+import { streamJSON, streamResponse, streamSse } from "../stream.js";
 
 class Watsonx extends BaseLLM {
   static providerName: ModelProvider = "watsonx";
@@ -29,10 +29,12 @@ class Watsonx extends BaseLLM {
     prompt: string,
     options: CompletionOptions
   ): AsyncGenerator<string> {
+
+    const accessToken = await this.getAccessToken(this.apiKey);
     const headers = {
       "Accept": "application/json",
       "Content-Type": "application/json",
-      "Authorization": `Bearer ${this.apiKey}`
+      "Authorization": `Bearer ${accessToken}`
     };
 
     let inputBody: string[] = [];
@@ -51,33 +53,68 @@ class Watsonx extends BaseLLM {
         repetition_penalty: 1.05
       },
       model_id: options.model,
-      project_id: "790743a6-e2cc-40ee-b587-03fe9c87358c"
+      project_id: "790743a6-e2cc-40ee-b587-03fe9c87358c",
+      stream: true
     };
 
-    const response = await this.fetch(new URL(this.apiBase ?? ""), {
+    const jsonBody = JSON.stringify({body, stream: true, ...this._convertArgs(options, prompt)});
+
+    // const response = await this.fetch(new URL(this.apiBase ?? ""), {
+    //   method: "POST",
+    //   headers, 
+    //   body: jsonBody
+    // });
+
+    const response = await this.fetch(this.apiBase ?? "", {
+      headers,
       method: "POST",
-      headers, 
-      body: JSON.stringify({
-        body,
-        stream: true,
-        ...this._convertArgs(options, prompt),
-      }),
+      body: JSON.stringify(body)
     });
 
     if (!response.ok) {
       throw new Error(`Failed to get response from WatsonX. (${response.status})`);
     }
 
+    // console.log(response.json());
+
+    // console.log(`stream json response`);
+    // for await (const value of streamJSON(response)) {
+    //   console.log(`value: ${value}`);
+    // }
+
     const asJson = await response.json() as any;
 
     if (asJson.results && Array.isArray(asJson.results)) {
-      for await (const result of streamSse(response)) {
-        if (result.content) {
-          yield result.content;
-        }
+      for (const result of asJson.results) {
+        yield result.generated_text;
       }
     }
 
+  }
+  async getAccessToken(apiKey: string = "") {
+
+    if (apiKey) {
+      try {
+        // curl -X POST 'https://iam.cloud.ibm.com/identity/token' -H 'Content-Type: application/x-www-form-urlencoded' -d 'grant_type=urn:ibm:params:oauth:grant-type:apikey&apikey=MY_APIKEY'
+        const iamResult = await fetch(`https://iam.cloud.ibm.com/identity/token`, {
+          headers: {
+            "Content-Type": `application/x-www-form-urlencoded`,
+          },
+          method: `POST`,
+          body: `grant_type=urn:ibm:params:oauth:grant-type:apikey&apikey=${apiKey}`
+        });
+  
+        if (iamResult.ok) {
+          const iamJson = await iamResult.json() as any;
+          const accessToken = iamJson.access_token;
+          if (accessToken) {
+            return accessToken;
+        }
+      }
+      } catch (e) {
+        console.log(e);
+      }
+    }
   }
 
 
