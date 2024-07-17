@@ -323,6 +323,22 @@
           "title": "Engine",
           "description": "Azure OpenAI engine",
           "type": "string"
+        },
+        "spaceId": {
+          "title": "Project ID",
+          "description": "Watsonx project ID",
+          "type": "string"
+        },
+        "clusterUrl": {
+          "title": "Endpoint URL",
+          "description": "Watsonx cluster URL",
+          "type": "string",
+          "enum":[
+            "us-south.ml.cloud.ibm.com",
+            "eu-de.ml.cloud.ibm.com",
+            "eu-gb.ml.cloud.ibm.com",
+            "jp-tok.ml.cloud.ibm.com"
+          ]
         }
       },
       "required": ["title", "provider", "model"],
@@ -400,6 +416,26 @@
                 "type": "string"
               },
               "apiVersion": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "provider": {
+                "enum": ["watsonx"]
+              }
+            },
+            "required": ["provider"]
+          },
+          "then": {
+            "properties": {
+              "spaceId": {
+                "type": "string"
+              },
+              "clusterUrl": {
                 "type": "string"
               }
             }
@@ -895,7 +931,7 @@
                 "enum": ["watsonx"]
               }
             },
-            "required": ["provider"]
+            "required": ["provider", "spaceId", "clusterUrl"]
           },
           "then": {
             "properties": {

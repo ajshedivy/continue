@@ -408,6 +408,21 @@ Select the \`GPT-4o\` model below to complete your provider configuration, but n
         placeholder: "Enter your WatsonX API key",
         required: true,
       },
+      {
+        inputType: "text",
+        key: "spaceId",
+        label: "Project ID",
+        placeholder: "Enter your Space ID",
+        required: true, // Set to false if this should be optional
+      },
+      {
+        inputType: "text",
+        key: "clusterUrl",
+        label: "Endpoint URL",
+        placeholder: "Enter your Endpoint URL",
+        required: true, // Set to false if this should be optional
+        defaultValue: "us-south.ml.cloud.ibm.com"
+      },
       ...completionParamsInputsConfigs,
     ],
     packages: [
