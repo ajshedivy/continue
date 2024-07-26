@@ -340,7 +340,20 @@ export const models: { [key: string]: ModelPackage } = {
       contextLength: 32000,
     },
     icon: "mistral.png",
-    providerOptions: ["mistral"],
+    providerOptions: ["mistral", "watsonx"],
+    isOpenSource: false,
+  },
+  mistralLargeWatsonx: {
+    title: "Mistral Large",
+    description:
+      "Mistral's flagship model that's ideal for complex tasks that require large reasoning capabilities or are highly specialized (Synthetic Text Generation, Code Generation, RAG, or Agents).",
+    params: {
+      title: "Mistral Large",
+      model: "mistralai/mistral-large",
+      contextLength: 32000,
+    },
+    icon: "mistral.png",
+    providerOptions: ["watsonx"],
     isOpenSource: false,
   },
   geminiPro: {

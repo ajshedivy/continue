@@ -1032,7 +1032,8 @@
                       "ibm/granite-13b-chat-v2",
                       "ibm-mistralai/merlinite-7b",
                       "ibm/granite-13b-instruct-v2",
-                      "ibm/granite-20b-code-instruct"
+                      "ibm/granite-20b-code-instruct",
+                      "mistral-large-latest"
                     ]
                   },
                   {

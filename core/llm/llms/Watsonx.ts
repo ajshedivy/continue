@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/naming-convention */
+import { Model } from "replicate";
 import {
   ChatMessage,
   CompletionOptions,
@@ -7,6 +8,31 @@ import {
 } from "../../index.js";
 import { BaseLLM } from "../index.js";
 import { streamJSON, streamResponse, streamSse } from "../stream.js";
+
+export interface ModelInputFormat {
+  roleLabel?: string;
+  systemMessage: string;
+  assistantMessage?: string;
+  promptMessage: string;
+}
+
+const watsonxInputFormats: { [key: string]: ModelInputFormat } = {
+  granite: {
+    roleLabel: "user",
+    systemMessage:
+      "<|system|>\nYou are Granite Chat, an AI language model developed by IBM. You are a cautious assistant. You carefully follow instructions. You are helpful and harmless and you follow ethical guidelines and promote positive behavior. You always respond to greetings (for example, hi, hello, g'''day, morning, afternoon, evening, night, what'''s up, nice to meet you, sup, etc) with \"Hello! I am Granite Chat, created by IBM. How can I help you today?\". Please do not say anything else and do not start a conversation.\n",
+    assistantMessage: "<|assistant|>\n",
+    promptMessage: "<|user|>\n${prompt}\n",
+  },
+  mistral: {
+    roleLabel: "user",
+    systemMessage:
+      "<s>[INST] You are Mixtral Chat, an AI language model developed by Mistral AI. You are a cautious assistant. You carefully follow instructions. You are helpful and harmless and you follow ethical guidelines and promote positive behavior.\n\n",
+    promptMessage: "${prompt}[/INST]",
+  },
+};
+
+const validWatsonxModels = ["granite", "mistral"];
 
 class Watsonx extends BaseLLM {
   static providerName: ModelProvider = "watsonx";
@@ -34,6 +60,44 @@ class Watsonx extends BaseLLM {
     return finalOptions;
   }
 
+  populateFormatString(
+    format: string,
+    values: { [key: string]: string },
+  ): string {
+    return format.replace(/{(\w+)}/g, (_, key) => values[key] || "");
+  }
+
+  getModelFormat(model: string): ModelInputFormat {
+    for (const key of validWatsonxModels) {
+      const modelType = key.toLowerCase();
+      if (model.includes(modelType)) {
+        return watsonxInputFormats[modelType];
+      }
+    }
+    throw new Error(`Unknown model: ${model}`);
+  }
+
+  createInputBody(model: string, prompt: string): string[] {
+    try {
+      const modelFormat: ModelInputFormat = this.getModelFormat(model);
+      if (modelFormat) {
+        let inputBody: string[] = [];
+        inputBody.push(modelFormat.systemMessage);
+        inputBody.push(
+          this.populateFormatString(modelFormat.promptMessage, {
+            prompt: prompt,
+          }),
+        );
+        inputBody.push(modelFormat.assistantMessage ?? "");
+        return inputBody;
+      }
+    } catch (e) {
+      throw e;
+    }
+
+    return [];
+  }
+
   protected async *_streamComplete(
     prompt: string,
     options: CompletionOptions,
@@ -45,13 +109,13 @@ class Watsonx extends BaseLLM {
       Authorization: `Bearer ${accessToken}`,
     };
 
-    let inputBody: string[] = [];
-    const roleLabel = "user";
-    inputBody.push(
-      "<|system|>\nYou are Granite Chat, an AI language model developed by IBM. You are a cautious assistant. You carefully follow instructions. You are helpful and harmless and you follow ethical guidelines and promote positive behavior. You always respond to greetings (for example, hi, hello, g'''day, morning, afternoon, evening, night, what'''s up, nice to meet you, sup, etc) with \"Hello! I am Granite Chat, created by IBM. How can I help you today?\". Please do not say anything else and do not start a conversation.\n",
-    );
-    inputBody.push(`<|${roleLabel}|>\n${prompt}\n`);
-    inputBody.push("<|assistant|>\n");
+    const inputBody: string[] = this.createInputBody(options.model, prompt);
+    // const roleLabel = "user";
+    // inputBody.push(
+    //   "<|system|>\nYou are Granite Chat, an AI language model developed by IBM. You are a cautious assistant. You carefully follow instructions. You are helpful and harmless and you follow ethical guidelines and promote positive behavior. You always respond to greetings (for example, hi, hello, g'''day, morning, afternoon, evening, night, what'''s up, nice to meet you, sup, etc) with \"Hello! I am Granite Chat, created by IBM. How can I help you today?\". Please do not say anything else and do not start a conversation.\n",
+    // );
+    // inputBody.push(`<|${roleLabel}|>\n${prompt}\n`);
+    // inputBody.push("<|assistant|>\n");
 
     const body = {
       input: inputBody.join(""),
@@ -94,12 +158,12 @@ class Watsonx extends BaseLLM {
       try {
         // curl -X POST 'https://iam.cloud.ibm.com/identity/token' -H 'Content-Type: application/x-www-form-urlencoded' -d 'grant_type=urn:ibm:params:oauth:grant-type:apikey&apikey=MY_APIKEY'
         const iamResult = await fetch(
-          `https://iam.cloud.ibm.com/identity/token`,
+          "https://iam.cloud.ibm.com/identity/token",
           {
             headers: {
-              "Content-Type": `application/x-www-form-urlencoded`,
+              "Content-Type": "application/x-www-form-urlencoded",
             },
-            method: `POST`,
+            method: "POST",
             body: `grant_type=urn:ibm:params:oauth:grant-type:apikey&apikey=${apiKey}`,
           },
         );

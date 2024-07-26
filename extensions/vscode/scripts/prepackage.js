@@ -305,7 +305,7 @@ const exe = os === "win32" ? ".exe" : "";
     const currentDir = process.cwd();
 
     // Remove the dir we will be copying to
-    rimrafSync(`node_modules/${toCopy}`);
+    // rimrafSync(`node_modules/${toCopy}`);
 
     // Ensure the temporary directory exists
     fs.mkdirSync(tempDir, { recursive: true });

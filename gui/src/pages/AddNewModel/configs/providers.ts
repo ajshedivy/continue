@@ -428,7 +428,8 @@ Select the \`GPT-4o\` model below to complete your provider configuration, but n
     packages: [
       models.granite13bChatV2,
       models.granite13bInstructV2,
-      models.granite20bCodeInstruct
+      models.granite20bCodeInstruct,
+      models.mistralLargeWatsonx
     ]
   },
   "llama.cpp": {
