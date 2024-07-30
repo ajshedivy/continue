@@ -418,6 +418,44 @@ Select the \`GPT-4o\` model below to complete your provider configuration, but n
     ],
     apiKeyUrl: "https://replicate.com/account/api-tokens",
   },
+  watsonx: {
+    title: "WatsonX",
+    provider: "watsonx",
+    description: "Use the WatsonX API to chat with IBM granite language models",
+    tags: [ModelProviderTags.RequiresApiKey],
+    icon: "watsonx.png",
+    collectInputFor: [
+      {
+        inputType: "text",
+        key: "apiKey",
+        label: "API Key",
+        placeholder: "Enter your WatsonX API key",
+        required: true,
+      },
+      {
+        inputType: "text",
+        key: "spaceId",
+        label: "Project ID",
+        placeholder: "Enter your Space ID",
+        required: true, // Set to false if this should be optional
+      },
+      {
+        inputType: "text",
+        key: "clusterUrl",
+        label: "Endpoint URL",
+        placeholder: "Enter your Endpoint URL",
+        required: true, // Set to false if this should be optional
+        defaultValue: "us-south.ml.cloud.ibm.com"
+      },
+      ...completionParamsInputsConfigs,
+    ],
+    packages: [
+      models.granite13bChatV2,
+      models.granite13bInstructV2,
+      models.granite20bCodeInstruct,
+      models.mistralLargeWatsonx
+    ]
+  },
   "llama.cpp": {
     title: "llama.cpp",
     provider: "llama.cpp",
