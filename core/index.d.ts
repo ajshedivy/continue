@@ -339,6 +339,10 @@ export interface LLMOptions {
   // GCP Options
   region?: string;
   projectId?: string;
+
+  // watsonx options
+  spaceId?: string;
+  clusterUrl?: string;
 }
 type RequireAtLeastOne<T, Keys extends keyof T = keyof T> = Pick<
   T,
@@ -590,7 +594,8 @@ type ModelProvider =
   | "deepseek"
   | "azure"
   | "openai-aiohttp"
-  | "msty";
+  | "msty"
+  | "watsonx";
 
 export type ModelName =
   | "AUTODETECT"

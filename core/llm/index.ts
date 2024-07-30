@@ -103,6 +103,9 @@ export abstract class BaseLLM implements ILLM {
   accountId?: string;
   aiGatewaySlug?: string;
 
+  spaceId?: string;
+  clusterUrl?: string;
+
   private _llmOptions: LLMOptions;
 
   constructor(_options: LLMOptions) {
@@ -164,6 +167,8 @@ export abstract class BaseLLM implements ILLM {
     this.apiType = options.apiType;
     this.region = options.region;
     this.projectId = options.projectId;
+    this.spaceId = options.spaceId;
+    this.clusterUrl = options.clusterUrl;
   }
 
   listModels(): Promise<string[]> {
