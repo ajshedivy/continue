@@ -961,7 +961,7 @@
                       "ibm-mistralai/merlinite-7b",
                       "ibm/granite-13b-instruct-v2",
                       "ibm/granite-20b-code-instruct",
-                      "mistral-large-latest"
+                      "mistralai/mistral-large"
                     ]
                   },
                   {
