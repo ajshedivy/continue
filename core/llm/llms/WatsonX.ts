@@ -231,6 +231,7 @@ class WatsonX extends BaseLLM {
                 generatedChunk += result.generated_text || "";
               });
             } catch (e) {
+              // First chunk is never complete. Issue probably with the API warning response truncating early
               console.error("Error thrown - ", e);
               console.error("Data received - ", dataStr);
             }
