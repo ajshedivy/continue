@@ -360,7 +360,7 @@ export interface ContextItemId {
   itemId: string;
 }
 
-export type ContextItemUriTypes = "file" | "url";
+export type ContextItemUriTypes = "file" | "url" | "symbol";
 
 export interface ContextItemUri {
   type: ContextItemUriTypes;

@@ -24,6 +24,7 @@ import PostgresContextProvider from "./PostgresContextProvider";
 import ProblemsContextProvider from "./ProblemsContextProvider";
 import RepoMapContextProvider from "./RepoMapContextProvider";
 import SearchContextProvider from "./SearchContextProvider";
+import SymbolContextProvider from "./SymbolContextProvider";
 import TerminalContextProvider from "./TerminalContextProvider";
 import URLContextProvider from "./URLContextProvider";
 import WebContextProvider from "./WebContextProvider";
@@ -62,6 +63,7 @@ export const Providers: (typeof BaseContextProvider)[] = [
   GreptileContextProvider,
   WebContextProvider,
   MCPContextProvider,
+  SymbolContextProvider
 ];
 
 export function contextProviderClassFromName(
