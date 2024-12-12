@@ -19,8 +19,8 @@ function getDocumentSymbols(uri: vscode.Uri) {
 class SymbolContextProvider extends BaseContextProvider {
   static description: ContextProviderDescription = {
     title: "symbols",
-    displayTitle: "Current",
-    description: "List of symbols in current file",
+    displayTitle: "Symbols",
+    description: "Reference symbols in current file",
     type: "normal",
   };
 

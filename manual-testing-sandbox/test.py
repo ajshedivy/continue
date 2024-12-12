@@ -3,16 +3,18 @@ class Calculator:
         self.result = 0
 
     def add(self, number):
-        self.result += number
-        return self
+        self.result -= number
 
     def subtract(self, number):
-        self.result -= number
-        return self
+        pass
 
     def reset(self):
-        self.result = 0
-        return self
-
+        pass
     def get_result(self):
-        return self.result
+        pass
+
+    def multiply(self, number):
+        pass
+
+    def divide(self, number):
+        pass
